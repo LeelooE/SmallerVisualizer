@@ -2,44 +2,8 @@ import React, { Component } from "react";
 import ReactDOM from 'react-dom';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
+import {droplets1, droplets2, working2, droplets3} from './fetchData/BasicDroplets';
 
-const droplets1 = [
-  {
-    id: 1,
-    location: { y: 0, x: 0 },
-    dimensions: { y: 1, x: 1 },
-    volume: 1.0,
-    color: "blue"
-  }
-];
-const droplets2 = [
-  {
-    id: 1,
-    location: { y: 1, x: 0 },
-    dimensions: { y: 1, x: 1 },
-    volume: 1.0,
-    color: "blue"
-  },
-  {
-    id: 2,
-    location: { y: 1, x: 2 },
-    dimensions: { y: 1, x: 1 },
-    volume: 1.0,
-    color: "red"
-  }
-];
-const working2 = {
-  mixlocation: {y: 1, x: 1}
-}
-const droplets3 = [
-  {
-    id: 3,
-    location: { y: 1, x: 1 },
-    dimensions: { y: 1, x: 1 },
-    volume: 2.0,
-    color: "purple"
-  }
-];
 const Box = () => <div className="box" />;
 const Droplet = props => (
   <div
@@ -59,25 +23,52 @@ class Visualizer extends Component {
     super();
     this.state = {
       droplets: [],
-      working: []
+      working: [],
+      current: 0
     };
   }
   componentDidMount() {
     setTimeout(this.tick1, 5000);
     setTimeout(this.tick2, 10000);
     setTimeout(this.tick3, 15000);
+    document.addEventListener("keydown", this.handleKeyPress.bind(this));
+  }
+  componentWillUnmount() {
+    document.addEventListener("keydown", this.handleKeyPress.bind(this));
+  }
+  handleKeyPress = (e) => {
+      const code = e.keyCode;
+      const working = this.state.working;
+      const current = this.state.current;
+      if(code === 39) {
+        if(working[current + 1]){
+          console.log(working[current + 1]);
+          this.setState({droplets: working[current + 1]});
+          this.setState({current: current + 1});
+        }
+      }
+      if(code === 37) {
+        if(working[current - 1]){
+          console.log(working[current - 1]);
+          this.setState({droplets: working[current - 1]});
+          this.setState({current: current - 1});
+        }
+      }
   }
   tick1 = () => {
     this.fakefetchData(1);
     this.setState({working: [...this.state.working, droplets1]});
+    this.setState({current: 0});
   }
   tick2 = () => {
     this.fakefetchData(2);
     this.setState({working: [...this.state.working, droplets2]});
+    this.setState({current: 1});
   }
   tick3 = () => {
     this.fakefetchData(3);
     this.setState({working: [...this.state.working, droplets3]});
+    this.setState({current: 2});
     console.log(this.state);
   }
   fakefetchData = num => {
@@ -103,7 +94,10 @@ class Visualizer extends Component {
   };
   render() {
     return (
-      <div className="app">
+      <div className="app" 
+      onKeyPress={this.handleKeyPress}
+      tabIndex='0'
+      >
         <h1>Simulation</h1>
         <div className="container">
           <div className="plate">
@@ -161,9 +155,14 @@ class Visualizer extends Component {
         }}>{this.state.working &&
           this.state.working.map(e => {
             let id = this.state.working.indexOf(e);
+            let background = "black";
+            if(id === this.state.current) {
+              background = "gold";
+            }
             return (
               <button className='sec'
                 key={id}
+                style={{backgroundColor: `${background}`}}
               />
             )
           })
