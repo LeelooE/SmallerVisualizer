@@ -23,9 +23,6 @@ export const droplets1 = [
       color: "red"
     }
   ];
- export const working2 = {
-    mixlocation: {y: 1, x: 1}
-  }
  export const droplets3 = [
     {
       id: 3,
