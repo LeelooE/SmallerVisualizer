@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import { droplets1, droplets2, droplets3 } from "./fetchData/BasicDroplets";
-import { droplet1, droplet2, droplet3 } from "./fetchData/OneDropletMoves";
+import { droplets1, droplets2, droplets3, droplets4, droplets5, droplets6} from "./fetchData/BasicDroplets";
 
 const Box = () => <div className="box" />;
+const array = [<Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />];
 const Droplet = props => (
   <div
     className="droplet"
@@ -37,9 +37,12 @@ class Visualizer extends Component {
     };
   }
   componentDidMount() {
-    setTimeout(this.tick1, 5000);
-    setTimeout(this.tick2, 10000);
-    setTimeout(this.tick3, 15000);
+    setTimeout(() => this.fakefetchData(1), 2500);
+    setTimeout(() => this.fakefetchData(2), 5000);
+    setTimeout(() => this.fakefetchData(3), 7500);
+    setTimeout(() => this.fakefetchData(4), 10000);
+    setTimeout(() => this.fakefetchData(5), 12500);
+    setTimeout(() => this.fakefetchData(6), 15000);
     document.addEventListener("keydown", this.handleKeyPress.bind(this));
   }
   componentWillUnmount() {
@@ -65,32 +68,22 @@ class Visualizer extends Component {
       }
     }
   };
-  tick1 = () => {
-    this.fakefetchData(1);
-    this.setState({ working: [...this.state.working, droplets1] });
-    this.setState({ current: 0 , droplet: droplets1});
-  };
-  tick2 = () => {
-    this.fakefetchData(2);
-    this.setState({ working: [...this.state.working, droplets2] });
-    this.setState({ current: 1 });
-  };
-  tick3 = () => {
-    this.fakefetchData(3);
-    this.setState({ working: [...this.state.working, droplets3] });
-    this.setState({ current: 2 });
-    console.log(this.state);
-  };
   fakefetchData = num => {
     switch (num) {
       case 1:
-        return this.setState({ droplets: droplets1 });
+        return this.setState({ droplets: droplets1,  working: [...this.state.working, droplets1], current: 0, droplet: droplets1});
       case 2:
-        return this.setState({ droplets: droplets2 });
+        return this.setState({ droplets: droplets2, working: [...this.state.working, droplets2], current: 1});
       case 3:
-        return this.setState({ droplets: droplets3 });
+        return this.setState({ droplets: droplets3, working: [...this.state.working, droplets3], current: 2 });
+        case 4:
+        return this.setState({ droplets: droplets4, working: [...this.state.working, droplets4], current: 3 });
+        case 5:
+        return this.setState({ droplets: droplets5, working: [...this.state.working, droplets5], current: 4 });
+        case 6:
+        return this.setState({ droplets: droplets6, working: [...this.state.working, droplets6], current: 5 });
       default:
-        return console.log("cycle done");
+        return console.log("cycle done?");
     }
   };
   fetchData = () => {
@@ -112,26 +105,7 @@ class Visualizer extends Component {
         <div className="top-part">
           <div className="container">
             <div className="plate">
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
-              <Box />
+            {array.map(box => {return (box)})}
               {this.state.droplets &&
                 this.state.droplets.map(el => {
                   let width = el.volume * 15;
