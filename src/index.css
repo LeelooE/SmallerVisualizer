@@ -35,7 +35,7 @@ body {
 .droplet {
   position: absolute;
   border-radius: 30px;
-  transition: top 5s, left 5s;
+  transition: top .15s, left .15s;
 }
 
 .container {
@@ -46,11 +46,6 @@ body {
   justify-content: center;
   align-items: center;
   padding: 0;
-}
-
-.buttons {
-  display: flex;
-  flex-direction: row;
 }
 
 .box {

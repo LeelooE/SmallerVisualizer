@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import { droplets1, droplets2, droplets3, droplets4, droplets5, droplets6} from "./fetchData/BasicDroplets";
+import { allDroplets} from "./fetchData/BasicDroplets";
 
 const Box = () => <div className="box" />;
-const array = [<Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />, <Box />];
+const array = [<Box key={0}/>, <Box key={1}/>, <Box key={2}/>, <Box key={3}/>, <Box key={4}/>, <Box key={5}/>, <Box key={6}/>, <Box key={7}/>, <Box key={8}/>, <Box key={9}/>, <Box key={10}/>, <Box key={11}/>, <Box key={12}/>, <Box key={13}/>, <Box key={14}/>, <Box key={15}/>, <Box key={16}/>, <Box key={17}/>, <Box key={18}/>, <Box key={19}/>];
 const Droplet = props => (
   <div
     className="droplet"
@@ -37,12 +37,12 @@ class Visualizer extends Component {
     };
   }
   componentDidMount() {
-    setTimeout(() => this.fakefetchData(1), 2500);
-    setTimeout(() => this.fakefetchData(2), 5000);
-    setTimeout(() => this.fakefetchData(3), 7500);
-    setTimeout(() => this.fakefetchData(4), 10000);
-    setTimeout(() => this.fakefetchData(5), 12500);
-    setTimeout(() => this.fakefetchData(6), 15000);
+    setTimeout(() => this.setState({ droplets: allDroplets[0],  working: [...this.state.working, allDroplets[0]], current: 0, droplet: allDroplets[0]}), 1000);
+    setTimeout(() => this.setState({ droplets: allDroplets[1], working: [...this.state.working, allDroplets[1]], current: 1}), 3000);
+    setTimeout(() => this.setState({ droplets: allDroplets[2], working: [...this.state.working, allDroplets[2]], current: 2 }), 6000);
+    setTimeout(() => this.setState({ droplets: allDroplets[3], working: [...this.state.working, allDroplets[3]], current: 3 }), 9000);
+    setTimeout(() => this.setState({ droplets: allDroplets[4], working: [...this.state.working, allDroplets[4]], current: 4 }), 12000);
+    setTimeout(() => this.setState({ droplets: allDroplets[5], working: [...this.state.working, allDroplets[5]], current: 5 }), 15000);
     document.addEventListener("keydown", this.handleKeyPress.bind(this));
   }
   componentWillUnmount() {
@@ -57,33 +57,15 @@ class Visualizer extends Component {
     const current = this.state.current;
     if (code === 39) {
       if (working[current + 1]) {
-        this.setState({ droplets: working[current + 1] });
-        this.setState({ current: current + 1 });
+          setTimeout(() => this.setState({ droplets: working[current + 1] }), 1000);
+          this.setState({ current: current + 1 });
       }
     }
     if (code === 37) {
       if (working[current - 1]) {
-        this.setState({ droplets: working[current - 1] });
-        this.setState({ current: current - 1 });
+          setTimeout(() => this.setState({ droplets: working[current - 1] }), 1000);
+          this.setState({ current: current - 1 });
       }
-    }
-  };
-  fakefetchData = num => {
-    switch (num) {
-      case 1:
-        return this.setState({ droplets: droplets1,  working: [...this.state.working, droplets1], current: 0, droplet: droplets1});
-      case 2:
-        return this.setState({ droplets: droplets2, working: [...this.state.working, droplets2], current: 1});
-      case 3:
-        return this.setState({ droplets: droplets3, working: [...this.state.working, droplets3], current: 2 });
-        case 4:
-        return this.setState({ droplets: droplets4, working: [...this.state.working, droplets4], current: 3 });
-        case 5:
-        return this.setState({ droplets: droplets5, working: [...this.state.working, droplets5], current: 4 });
-        case 6:
-        return this.setState({ droplets: droplets6, working: [...this.state.working, droplets6], current: 5 });
-      default:
-        return console.log("cycle done?");
     }
   };
   fetchData = () => {
@@ -105,7 +87,7 @@ class Visualizer extends Component {
         <div className="top-part">
           <div className="container">
             <div className="plate">
-            {array.map(box => {return (box)})}
+            { array.map(box => {return (box)})}
               {this.state.droplets &&
                 this.state.droplets.map(el => {
                   let width = el.volume * 15;
