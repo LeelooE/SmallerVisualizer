@@ -20,6 +20,11 @@ body {
   align-items: center;
 }
 
+.module {
+  opacity: 0.5;
+  position: absolute;
+}
+
 .plate {
   background-color: gold;
   width: 240px;

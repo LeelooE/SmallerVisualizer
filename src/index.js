@@ -2,10 +2,24 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
-import { allDroplets} from "./fetchData/BasicDroplets";
+import { allDroplets } from "./fetchData/BasicDroplets";
 
-const Box = () => <div className="box" />;
-const array = [<Box key={0}/>, <Box key={1}/>, <Box key={2}/>, <Box key={3}/>, <Box key={4}/>, <Box key={5}/>, <Box key={6}/>, <Box key={7}/>, <Box key={8}/>, <Box key={9}/>, <Box key={10}/>, <Box key={11}/>, <Box key={12}/>, <Box key={13}/>, <Box key={14}/>, <Box key={15}/>, <Box key={16}/>, <Box key={17}/>, <Box key={18}/>, <Box key={19}/>];
+const Module = props => (
+  <div
+    className="module"
+    style={{
+      backgroundColor: props.backgroundColor,
+      left: props.x,
+      top: props.y,
+      width: props.width,
+      height: props.height
+    }}
+  />
+);
+const Box = props => (
+  <div className="box" style={{ backgroundColor: props.backgroundColor }} />
+);
+const array = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19];
 const Droplet = props => (
   <div
     className="droplet"
@@ -30,23 +44,37 @@ class Visualizer extends Component {
   constructor() {
     super();
     this.state = {
-      droplets: [],
-      working: [],
-      current: 0,
-      droplet: undefined
+      droplets: allDroplets[5][0].droplets,
+      working: allDroplets,
+      current: 5,
+      droplet: undefined,
+      module: allDroplets[5][0].modules,
+      future: undefined
     };
   }
   componentDidMount() {
-    setTimeout(() => this.setState({ droplets: allDroplets[0],  working: [...this.state.working, allDroplets[0]], current: 0, droplet: allDroplets[0]}), 1000);
-    setTimeout(() => this.setState({ droplets: allDroplets[1], working: [...this.state.working, allDroplets[1]], current: 1}), 3000);
-    setTimeout(() => this.setState({ droplets: allDroplets[2], working: [...this.state.working, allDroplets[2]], current: 2 }), 6000);
-    setTimeout(() => this.setState({ droplets: allDroplets[3], working: [...this.state.working, allDroplets[3]], current: 3 }), 9000);
-    setTimeout(() => this.setState({ droplets: allDroplets[4], working: [...this.state.working, allDroplets[4]], current: 4 }), 12000);
-    setTimeout(() => this.setState({ droplets: allDroplets[5], working: [...this.state.working, allDroplets[5]], current: 5 }), 15000);
     document.addEventListener("keydown", this.handleKeyPress.bind(this));
+    setInterval(() => {
+      this.update();
+    }, 2000);
   }
   componentWillUnmount() {
     document.addEventListener("keydown", this.handleKeyPress.bind(this));
+  }
+  update() {
+    const future = this.state.future;
+    const current = this.state.current;
+    console.log(future + " " + current);
+    if (future >= 0 && current !== future) {
+      if (current - future > 0) {
+        this.handleKeyPress({ keyCode: 37 });
+      } else if (current - future < 0) {
+        this.handleKeyPress({ keyCode: 39 });
+      }
+    }
+  }
+  setFuture(id) {
+    this.setState({ future: id });
   }
   handleDropletClick(e) {
     this.setState({ droplet: e });
@@ -57,14 +85,20 @@ class Visualizer extends Component {
     const current = this.state.current;
     if (code === 39) {
       if (working[current + 1]) {
-          setTimeout(() => this.setState({ droplets: working[current + 1] }), 1000);
-          this.setState({ current: current + 1 });
+        this.setState({
+          droplets: working[current + 1][0].droplets,
+          current: current + 1,
+          module: working[current + 1][0].modules
+        });
       }
     }
     if (code === 37) {
       if (working[current - 1]) {
-          setTimeout(() => this.setState({ droplets: working[current - 1] }), 1000);
-          this.setState({ current: current - 1 });
+        this.setState({
+          droplets: working[current - 1][0].droplets,
+          current: current - 1,
+          module: working[current - 1][0].modules
+        });
       }
     }
   };
@@ -87,7 +121,26 @@ class Visualizer extends Component {
         <div className="top-part">
           <div className="container">
             <div className="plate">
-            { array.map(box => {return (box)})}
+              {array.map(num => {
+                return <Box key={num} />;
+              })}
+              <Module
+                width={`${this.state.module.dimensions.x * 60}px`}
+                height={`${this.state.module.dimensions.y * 60}px`}
+                backgroundColor={`${this.state.module.color}`}
+                x={`${
+                  this.state.module.location.x > 0
+                    ? this.state.module.location.x * 60 +
+                      (60 - this.state.module.dimensions.x * 60) / 2
+                    : (60 - this.state.module.dimensions.x * 60) / 2
+                }px`}
+                y={`${
+                  this.state.module.location.y > 0
+                    ? this.state.module.location.y * 60 +
+                      (60 - this.state.module.dimensions.y * 60) / 2
+                    : (60 - this.state.module.dimensions.y * 60) / 2
+                }px`}
+              />
               {this.state.droplets &&
                 this.state.droplets.map(el => {
                   let width = el.volume * 15;
@@ -143,6 +196,7 @@ class Visualizer extends Component {
               }
               return (
                 <button
+                  onClick={() => this.setFuture(id)}
                   className="sec"
                   key={id}
                   style={{ backgroundColor: `${background}` }}
